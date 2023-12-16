@@ -19,11 +19,11 @@ export async function GET(
       include: {
         images: true,
         category: true,
-        size: true,
-        color: true,
+        // size: true,
+        // color: true,
       }
     });
-  
+
     return NextResponse.json(product);
   } catch (error) {
     console.log('[PRODUCT_GET]', error);
@@ -62,7 +62,7 @@ export async function DELETE(
         id: params.productId
       },
     });
-  
+
     return NextResponse.json(product);
   } catch (error) {
     console.log('[PRODUCT_DELETE]', error);
@@ -133,8 +133,8 @@ export async function PATCH(
         name,
         price,
         categoryId,
-        colorId,
-        sizeId,
+        // colorId,
+        // sizeId,
         images: {
           deleteMany: {},
         },
@@ -157,7 +157,7 @@ export async function PATCH(
         },
       },
     })
-  
+
     return NextResponse.json(product);
   } catch (error) {
     console.log('[PRODUCT_PATCH]', error);

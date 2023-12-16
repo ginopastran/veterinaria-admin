@@ -64,8 +64,8 @@ export async function POST(
         isFeatured,
         isArchived,
         categoryId,
-        colorId,
-        sizeId,
+        // colorId,
+        // sizeId,
         storeId: params.storeId,
         images: {
           createMany: {
@@ -76,7 +76,7 @@ export async function POST(
         },
       },
     });
-  
+
     return NextResponse.json(product);
   } catch (error) {
     console.log('[PRODUCTS_POST]', error);
@@ -103,22 +103,22 @@ export async function GET(
       where: {
         storeId: params.storeId,
         categoryId,
-        colorId,
-        sizeId,
+        // colorId,
+        // sizeId,
         isFeatured: isFeatured ? true : undefined,
         isArchived: false,
       },
       include: {
         images: true,
         category: true,
-        color: true,
-        size: true,
+        // color: true,
+        // size: true,
       },
       orderBy: {
         createdAt: 'desc',
       }
     });
-  
+
     return NextResponse.json(products);
   } catch (error) {
     console.log('[PRODUCTS_GET]', error);
