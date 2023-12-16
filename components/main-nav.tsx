@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link"
+import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export function MainNav({
   className,
@@ -15,45 +15,41 @@ export function MainNav({
   const routes = [
     {
       href: `/${params.storeId}`,
-      label: 'Overview',
+      label: "Overview",
       active: pathname === `/${params.storeId}`,
     },
     {
-      href: `/${params.storeId}/billboards`,
-      label: 'Billboards',
-      active: pathname === `/${params.storeId}/billboards`,
-    },
-    {
       href: `/${params.storeId}/categories`,
-      label: 'Categories',
+      label: "Categories",
       active: pathname === `/${params.storeId}/categories`,
     },
     {
-      href: `/${params.storeId}/sizes`,
-      label: 'Sizes',
-      active: pathname === `/${params.storeId}/sizes`,
-    },
-    {
-      href: `/${params.storeId}/colors`,
-      label: 'Colors',
-      active: pathname === `/${params.storeId}/colors`,
-    },
-    {
       href: `/${params.storeId}/products`,
-      label: 'Products',
+      label: "Products",
       active: pathname === `/${params.storeId}/products`,
     },
+
+    // {
+    //   href: `/${params.storeId}/colors`,
+    //   label: "Colors",
+    //   active: pathname === `/${params.storeId}/colors`,
+    // },
+    // {
+    //   href: `/${params.storeId}/sizes`,
+    //   label: "Sizes",
+    //   active: pathname === `/${params.storeId}/sizes`,
+    // },
     {
       href: `/${params.storeId}/orders`,
-      label: 'Orders',
+      label: "Orders",
       active: pathname === `/${params.storeId}/orders`,
     },
     {
       href: `/${params.storeId}/settings`,
-      label: 'Settings',
+      label: "Settings",
       active: pathname === `/${params.storeId}/settings`,
     },
-  ]
+  ];
 
   return (
     <nav
@@ -65,13 +61,15 @@ export function MainNav({
           key={route.href}
           href={route.href}
           className={cn(
-            'text-sm font-medium transition-colors hover:text-primary',
-            route.active ? 'text-black dark:text-white' : 'text-muted-foreground'
+            "text-sm font-medium transition-colors hover:text-primary",
+            route.active
+              ? "text-black dark:text-white"
+              : "text-muted-foreground"
           )}
         >
           {route.label}
-      </Link>
+        </Link>
       ))}
     </nav>
-  )
-};
+  );
+}
