@@ -1,8 +1,11 @@
-import Stripe from "stripe";
+import { CreatePreferencePayload } from "mercadopago/models/preferences/create-payload.model";
 import { NextResponse } from "next/server";
-
-import { stripe } from "@/lib/stripe";
 import prismadb from "@/lib/prismadb";
+import mercadopago from "mercadopago";
+
+mercadopago.configure({
+  access_token: process.env.NEXT_ACCESS_TOKEN!,
+});
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -32,18 +35,13 @@ export async function POST(
     }
   });
 
-  const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+  const items: CreatePreferencePayload["items"] = [];
 
   products.forEach((product) => {
-    line_items.push({
+    items.push({
+      title: product.name,
+      unit_price: product.price.toNumber(),
       quantity: 1,
-      price_data: {
-        currency: 'USD',
-        product_data: {
-          name: product.name,
-        },
-        unit_amount: product.price.toNumber() * 100
-      }
     });
   });
 
@@ -63,21 +61,18 @@ export async function POST(
     }
   });
 
-  const session = await stripe.checkout.sessions.create({
-    line_items,
-    mode: 'payment',
-    billing_address_collection: 'required',
-    phone_number_collection: {
-      enabled: true,
+  const preference: CreatePreferencePayload = {
+    items,
+    auto_return: "approved",
+    back_urls: {
+      success: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
+      failure: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
     },
-    success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
-    cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
-    metadata: {
-      orderId: order.id
-    },
-  });
+  };
 
-  return NextResponse.json({ url: session.url }, {
+  const response = await mercadopago.preferences.create(preference);
+
+  return NextResponse.json({ url: response.body.init_point }, {
     headers: corsHeaders
   });
 };
