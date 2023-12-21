@@ -19,6 +19,7 @@ export async function GET(
       include: {
         images: true,
         category: true,
+        subcategory: true,
         // size: true,
         // color: true,
       }
@@ -80,7 +81,7 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const { name, price, categoryId, images, colorId, sizeId, isFeatured, isArchived } = body;
+    const { name, price, categoryId, subcategoryId, images, colorId, sizeId, isFeatured, isArchived } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -104,6 +105,10 @@ export async function PATCH(
 
     if (!categoryId) {
       return new NextResponse("Category id is required", { status: 400 });
+    }
+
+    if (!subcategoryId) {
+      return new NextResponse("Subcategory id is required", { status: 400 });
     }
 
     if (!colorId) {
@@ -133,6 +138,7 @@ export async function PATCH(
         name,
         price,
         categoryId,
+        subcategoryId,
         // colorId,
         // sizeId,
         images: {

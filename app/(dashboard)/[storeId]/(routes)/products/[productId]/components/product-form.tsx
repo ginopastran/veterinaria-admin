@@ -7,7 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Trash } from "lucide-react";
-import { Category, /*Color*/ Image, Product /*Size*/ } from "@prisma/client";
+import {
+  Category,
+  Subcategory,
+  /*Color*/ Image,
+  Product /*Size*/,
+} from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
@@ -38,9 +43,12 @@ const formSchema = z.object({
   name: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
+  offerPrice: z.coerce.number().min(1).optional(),
   categoryId: z.string().min(1),
+  subcategoryId: z.string().min(1),
   // colorId: z.string().min(1),
   // sizeId: z.string().min(1),
+  hasOffer: z.boolean().default(false).optional(),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
 });
@@ -54,6 +62,7 @@ interface ProductFormProps {
       })
     | null;
   categories: Category[];
+  subcategories: Subcategory[];
   // colors: Color[];
   // sizes: Size[];
 }
@@ -61,6 +70,7 @@ interface ProductFormProps {
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialData,
   categories,
+  subcategories,
   // sizes,
   // colors
 }) => {
@@ -79,16 +89,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     ? {
         ...initialData,
         price: parseFloat(String(initialData?.price)),
+        offerPrice: parseFloat(String(initialData?.offerPrice)),
+        hasOffer: Boolean(initialData?.offerPrice),
       }
     : {
         name: "",
         images: [],
         price: 0,
         categoryId: "",
+        subcategoryId: "",
         // colorId: '',
         // sizeId: '',
         isFeatured: false,
         isArchived: false,
+        hasOffer: false,
       };
 
   const form = useForm<ProductFormValues>({
@@ -131,6 +145,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       setOpen(false);
     }
   };
+
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   return (
     <>
@@ -221,13 +237,55 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             />
             <FormField
               control={form.control}
+              name="hasOffer"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={Boolean(field.value)}
+                      // @ts-ignore
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Has Offer</FormLabel>
+                    <FormDescription>
+                      Check if the product has an offer price.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="offerPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Offer Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      disabled={loading || !form.watch("hasOffer")} // Deshabilita el campo si no hay oferta
+                      placeholder="9.99"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="categoryId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Category</FormLabel>
                   <Select
                     disabled={loading}
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setSelectedCategory(value);
+                    }}
                     value={field.value}
                     defaultValue={field.value}
                   >
@@ -245,6 +303,47 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                           {category.name}
                         </SelectItem>
                       ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="subcategoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Subcategory</FormLabel>
+                  <Select
+                    disabled={loading || !selectedCategory}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select a subcategory"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {subcategories
+                        .filter(
+                          (subcategory) =>
+                            subcategory.categoryId === selectedCategory
+                        )
+                        .map((subcategory) => (
+                          <SelectItem
+                            key={subcategory.id}
+                            value={subcategory.id}
+                          >
+                            {subcategory.name}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

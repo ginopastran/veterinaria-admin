@@ -13,6 +13,7 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     },
     include: {
       category: true,
+      subcategory: true,
       // size: true,
       // color: true,
     },
@@ -27,7 +28,11 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     isFeatured: item.isFeatured,
     isArchived: item.isArchived,
     price: formatter.format(item.price.toNumber()),
+    offerPrice: item.offerPrice
+      ? formatter.format(item.offerPrice.toNumber())
+      : null,
     category: item.category.name,
+    subcategory: item.subcategory.name,
     // size: item.size.name,
     // color: item.color.value,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
@@ -36,7 +41,12 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProductsClient data={formattedProducts} />
+        <ProductsClient
+          data={formattedProducts.map((item) => ({
+            ...item,
+            offerPrice: item.offerPrice || "", // Reemplaza null por una cadena vacía
+          }))}
+        />
       </div>
     </div>
   );
