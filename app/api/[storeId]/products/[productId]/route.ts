@@ -81,7 +81,18 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const { name, price, categoryId, subcategoryId, images, colorId, sizeId, isFeatured, isArchived } = body;
+    const {
+      name,
+      nameTag,
+      price,
+      offerPrice,
+      categoryId,
+      subcategoryId,
+      images,
+      hasOffer,
+      isFeatured,
+      isArchived,
+    } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -93,6 +104,10 @@ export async function PATCH(
 
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
+    }
+
+    if (!nameTag) {
+      return new NextResponse("NameTag is required", { status: 400 });
     }
 
     if (!images || !images.length) {
@@ -111,62 +126,76 @@ export async function PATCH(
       return new NextResponse("Subcategory id is required", { status: 400 });
     }
 
-    if (!colorId) {
-      return new NextResponse("Color id is required", { status: 400 });
-    }
-
-    if (!sizeId) {
-      return new NextResponse("Size id is required", { status: 400 });
-    }
-
     const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
-        userId
-      }
+        userId,
+      },
     });
 
     if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
+    // Update the product with basic information
     await prismadb.product.update({
       where: {
-        id: params.productId
+        id: params.productId,
       },
       data: {
         name,
+        nameTag,
         price,
         categoryId,
         subcategoryId,
-        // colorId,
-        // sizeId,
         images: {
           deleteMany: {},
         },
+        hasOffer,
         isFeatured,
         isArchived,
       },
     });
 
+    // If hasOffer is true, update the offer related fields
+    if (hasOffer) {
+      await prismadb.product.update({
+        where: {
+          id: params.productId,
+        },
+        data: {
+          offerPrice,
+        },
+      });
+    } else {
+      // If hasOffer is false, clear the offer related fields
+      await prismadb.product.update({
+        where: {
+          id: params.productId,
+        },
+        data: {
+          offerPrice: null,
+        },
+      });
+    }
+
+    // Create new images
     const product = await prismadb.product.update({
       where: {
-        id: params.productId
+        id: params.productId,
       },
       data: {
         images: {
           createMany: {
-            data: [
-              ...images.map((image: { url: string }) => image),
-            ],
+            data: [...images.map((image: { url: string }) => image)],
           },
         },
       },
-    })
+    });
 
     return NextResponse.json(product);
   } catch (error) {
-    console.log('[PRODUCT_PATCH]', error);
+    console.log("[PRODUCT_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}

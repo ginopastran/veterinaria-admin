@@ -41,9 +41,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   name: z.string().min(1),
+  nameTag: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
-  offerPrice: z.coerce.number().min(1).optional(),
+  offerPrice: z.number().min(1).nullable().optional(),
   categoryId: z.string().min(1),
   subcategoryId: z.string().min(1),
   // colorId: z.string().min(1),
@@ -89,17 +90,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     ? {
         ...initialData,
         price: parseFloat(String(initialData?.price)),
-        offerPrice: parseFloat(String(initialData?.offerPrice)),
-        hasOffer: Boolean(initialData?.offerPrice),
+        offerPrice:
+          initialData?.offerPrice !== undefined &&
+          !isNaN(parseFloat(String(initialData?.offerPrice)))
+            ? parseFloat(String(initialData?.offerPrice))
+            : null,
+        hasOffer: Boolean(initialData?.hasOffer),
       }
     : {
         name: "",
+        nameTag: "",
         images: [],
         price: 0,
         categoryId: "",
         subcategoryId: "",
-        // colorId: '',
-        // sizeId: '',
         isFeatured: false,
         isArchived: false,
         hasOffer: false,
@@ -146,7 +150,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     }
   };
 
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    initialData ? initialData.categoryId : null
+  );
 
   return (
     <>
@@ -205,11 +211,28 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Marca</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Product name"
+                      placeholder="Nombre de la Marca"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="nameTag"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name Tag</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Name Tag"
                       {...field}
                     />
                   </FormControl>
@@ -265,9 +288,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   <FormControl>
                     <Input
                       type="number"
-                      disabled={loading || !form.watch("hasOffer")} // Deshabilita el campo si no hay oferta
+                      disabled={loading || !form.watch("hasOffer")}
                       placeholder="9.99"
-                      {...field}
+                      value={field.value === null ? "" : String(field.value)}
+                      onChange={(e) => {
+                        const newValue = parseFloat(e.target.value);
+                        if (!isNaN(newValue)) {
+                          field.onChange(newValue);
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -309,7 +338,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="subcategoryId"

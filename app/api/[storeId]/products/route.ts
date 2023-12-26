@@ -12,7 +12,7 @@ export async function POST(
 
     const body = await req.json();
 
-    const { name, price, offerPrice, categoryId, subcategoryId, colorId, sizeId, images, isFeatured, isArchived } = body;
+    const { name, nameTag, price, offerPrice, categoryId, subcategoryId, colorId, sizeId, images, isFeatured, isArchived } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -64,6 +64,7 @@ export async function POST(
     const product = await prismadb.product.create({
       data: {
         name,
+        nameTag,
         price,
         offerPrice,
         isFeatured,
@@ -101,6 +102,7 @@ export async function GET(
     // const colorId = searchParams.get('colorId') || undefined;
     // const sizeId = searchParams.get('sizeId') || undefined;
     const isFeatured = searchParams.get('isFeatured');
+    const offerPrice = searchParams.get('offerPrice');
 
     if (!params.storeId) {
       return new NextResponse("Store id is required", { status: 400 });
@@ -111,6 +113,7 @@ export async function GET(
         storeId: params.storeId,
         categoryId,
         subcategoryId,
+        offerPrice: offerPrice ? { gte: parseInt(offerPrice) } : undefined,
         // colorId,
         // sizeId,
         isFeatured: isFeatured ? true : undefined,

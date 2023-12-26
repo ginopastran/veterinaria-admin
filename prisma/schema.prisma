@@ -13,6 +13,7 @@ model Store {
   name       String
   userId     String
   categories Category[] @relation("StoreToCategory")
+  subcategories Subcategory[] @relation("StoreToSubcategory")
   products   Product[]  @relation("StoreToProduct")
   orders     Order[]    @relation("StoreToOrder")
   createdAt  DateTime  @default(now())
@@ -35,11 +36,15 @@ model Category {
 model Subcategory {
   id         String       @id @default(uuid())
   name       String
+  storeId     String    
+  store       Store     @relation("StoreToSubcategory", fields: [storeId], references: [id])
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   categoryId String
   category   Category     @relation("SubcategoryToCategory", fields: [categoryId], references: [id]) 
   products   Product[]    @relation("SubcategoryToProduct")
+
+  @@index([storeId])
   @@index([categoryId])
 }
 
@@ -52,8 +57,10 @@ model Product {
   subcategoryId String  
   subcategory   Subcategory @relation("SubcategoryToProduct", fields: [subcategoryId], references: [id])
   name        String
+  nameTag     String
   price       Decimal
   offerPrice  Decimal?
+  hasOffer    Boolean   @default(false)
   isFeatured  Boolean   @default(false)
   isArchived  Boolean   @default(false)
   images      Image[]   

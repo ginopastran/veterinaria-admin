@@ -12,7 +12,9 @@ const SubcategoriesPage = async ({
 }) => {
   const subcategories = await prismadb.subcategory.findMany({
     where: {
-      categoryId: params.categoryId,
+      category: {
+        storeId: params.storeId,
+      },
     },
     include: {
       category: true,
