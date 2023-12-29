@@ -58,6 +58,13 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
+    // Delete all OrderItem records associated with the Product
+    await prismadb.orderItem.deleteMany({
+      where: {
+        productId: params.productId
+      },
+    });
+
     const product = await prismadb.product.delete({
       where: {
         id: params.productId
@@ -70,7 +77,6 @@ export async function DELETE(
     return new NextResponse("Internal error", { status: 500 });
   }
 };
-
 
 export async function PATCH(
   req: Request,
