@@ -3,6 +3,16 @@ import { auth } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 
 export async function PATCH(
   req: Request,
@@ -35,7 +45,7 @@ export async function PATCH(
         name
       }
     });
-  
+
     return NextResponse.json(store);
   } catch (error) {
     console.log('[STORE_PATCH]', error);
@@ -65,7 +75,7 @@ export async function DELETE(
         userId
       }
     });
-  
+
     return NextResponse.json(store);
   } catch (error) {
     console.log('[STORE_DELETE]', error);
