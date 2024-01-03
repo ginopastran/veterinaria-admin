@@ -58,13 +58,14 @@ export async function POST(
 
 export async function GET(
     req: Request,
-    { params }: { params: { categoryId: string } }
+    { params }: { params: { categoryId: string, storeId: string } }
 ) {
     try {
 
         const subcategories = await prismadb.subcategory.findMany({
             where: {
-                categoryId: params.categoryId
+                categoryId: params.categoryId,
+                storeId: params.storeId
             }
         });
 
