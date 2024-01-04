@@ -40,7 +40,7 @@ export async function POST(
   products.forEach((product) => {
     items.push({
       title: product.name,
-      unit_price: product.price.toNumber(),
+      unit_price: product.offerPrice ? product.offerPrice.toNumber() : product.price.toNumber(),
       quantity: 1,
     });
   });
