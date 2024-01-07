@@ -61,6 +61,8 @@ export async function POST(
     }
   });
 
+
+
   const preference: CreatePreferencePayload = {
     items,
     auto_return: "approved",
@@ -68,6 +70,7 @@ export async function POST(
       success: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
       failure: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
     },
+    notification_url: `${process.env.NEXT_PUBLIC_API_URL}/api/notify`,
   };
 
   const response = await mercadopago.preferences.create(preference);
