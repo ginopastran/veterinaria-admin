@@ -21,7 +21,7 @@ export async function POST(
   req: Request,
   { params }: { params: { storeId: string } }
 ) {
-  const { productIds } = await req.json();
+  const { productIds, orderFormData } = await req.json();
 
   if (!productIds || productIds.length === 0) {
     return new NextResponse("Product ids are required", { status: 400 });
@@ -57,7 +57,8 @@ export async function POST(
             }
           }
         }))
-      }
+      },
+      formData: orderFormData
     }
   });
 
@@ -70,7 +71,6 @@ export async function POST(
       success: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
       failure: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
     },
-    notification_url: `${process.env.NEXT_PUBLIC_API_URL}/api/notify`,
   };
 
   const response = await mercadopago.preferences.create(preference);

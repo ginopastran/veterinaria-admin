@@ -58,6 +58,7 @@ model Product {
   subcategory   Subcategory @relation("SubcategoryToProduct", fields: [subcategoryId], references: [id])
   name        String
   nameTag     String
+  description String
   price       Decimal
   offerPrice  Decimal?
   hasOffer    Boolean   @default(false)
@@ -74,18 +75,18 @@ model Product {
 }
 
 model Order {
-  id          String    @id @default(uuid())
-  storeId     String   
-  store       Store     @relation("StoreToOrder", fields: [storeId], references: [id])
-  orderItems  OrderItem[] 
-  isPaid      Boolean   @default(false)
-  phone       String    @default("")
-  address     String    @default("")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id            String      @id @default(uuid())
+  storeId       String      
+  store         Store       @relation("StoreToOrder", fields: [storeId], references: [id])
+  orderItems    OrderItem[] 
+  isPaid        Boolean     @default(false)  
+  formData      Json?       // Campo para almacenar datos del formulario como JSON
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   
   @@index([storeId])
 }
+
 
 model OrderItem {
   id         String   @id @default(uuid())

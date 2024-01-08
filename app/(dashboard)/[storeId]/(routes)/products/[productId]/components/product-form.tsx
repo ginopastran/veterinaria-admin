@@ -38,10 +38,12 @@ import {
 } from "@/components/ui/select";
 import ImageUpload from "@/components/ui/image-upload";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   name: z.string().min(1),
   nameTag: z.string().min(1),
+  description: z.string().min(4),
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
   offerPrice: z.number().min(1).nullable().optional(),
@@ -100,6 +102,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     : {
         name: "",
         nameTag: "",
+        description: "",
         images: [],
         price: 0,
         categoryId: "",
@@ -234,6 +237,24 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                       disabled={loading}
                       placeholder="Name Tag"
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descripción</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      disabled={loading}
+                      placeholder="Descripción..."
+                      {...field}
+                      className="resize-none"
                     />
                   </FormControl>
                   <FormMessage />
