@@ -26,13 +26,13 @@ export const SubcategoriesClient: React.FC<SubcategoriesClientProps> = ({
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Subcategories (${data.length})`}
-          description="Manage subcategories for your category"
+          title={`Subcategorías (${data.length})`}
+          description="Maneja las subcategorías de tu tienda."
         />
         <Button
           onClick={() => router.push(`/${params.storeId}/subcategories/new`)}
         >
-          <Plus className="mr-2 h-4 w-4" /> Add New
+          <Plus className="mr-2 h-4 w-4" /> Añadir nueva
         </Button>
       </div>
       <Separator />

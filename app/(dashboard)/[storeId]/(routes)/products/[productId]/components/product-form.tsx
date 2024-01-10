@@ -43,7 +43,7 @@ import { Textarea } from "@/components/ui/textarea";
 const formSchema = z.object({
   name: z.string().min(1),
   nameTag: z.string().min(1),
-  description: z.string().min(4),
+  description: z.string().min(4).max(800),
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
   offerPrice: z.number().min(1).nullable().optional(),
@@ -83,10 +83,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit product" : "Create product";
-  const description = initialData ? "Edit a product." : "Add a new product";
-  const toastMessage = initialData ? "Product updated." : "Product created.";
-  const action = initialData ? "Save changes" : "Create";
+  const title = initialData ? "Editar producto" : "Crear producto";
+  const description = initialData
+    ? "Editar el producto"
+    : "Añadir un nuevo producto.";
+  const toastMessage = initialData
+    ? "Producto actualizado."
+    : "Producto creado.";
+  const action = initialData ? "Guardar cambios" : "Crear";
 
   const defaultValues = initialData
     ? {
@@ -132,7 +136,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       router.push(`/${params.storeId}/products`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Algo salió mal.");
     } finally {
       setLoading(false);
     }
@@ -144,9 +148,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
       router.refresh();
       router.push(`/${params.storeId}/products`);
-      toast.success("Product deleted.");
+      toast.success("Producto eliminado.");
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Algo salió mal.");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -189,7 +193,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             name="images"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Images</FormLabel>
+                <FormLabel>Imagenes</FormLabel>
                 <FormControl>
                   <ImageUpload
                     value={field.value.map((image) => image.url)}
@@ -266,7 +270,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>Precio</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -292,9 +296,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Has Offer</FormLabel>
+                    <FormLabel>Tiene oferta?</FormLabel>
                     <FormDescription>
-                      Check if the product has an offer price.
+                      Este producto tendrá un precio de oferta.
                     </FormDescription>
                   </div>
                 </FormItem>
@@ -305,7 +309,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               name="offerPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Offer Price</FormLabel>
+                  <FormLabel>Precio de oferta</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -329,7 +333,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               name="categoryId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>Categoría</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={(value) => {
@@ -364,7 +368,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               name="subcategoryId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Subcategory</FormLabel>
+                  <FormLabel>Subcategoría</FormLabel>
                   <Select
                     disabled={loading || !selectedCategory}
                     onValueChange={field.onChange}
@@ -456,9 +460,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Featured</FormLabel>
+                    <FormLabel>Destacado</FormLabel>
                     <FormDescription>
-                      This product will appear on the home page
+                      Este producto aparecerá en la página de inicio.
                     </FormDescription>
                   </div>
                 </FormItem>
@@ -477,9 +481,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Archived</FormLabel>
+                    <FormLabel>Archivado</FormLabel>
                     <FormDescription>
-                      This product will not appear anywhere in the store.
+                      Este producto no aparecerá en ninguna parte de la tienda.
                     </FormDescription>
                   </div>
                 </FormItem>

@@ -58,7 +58,7 @@ model Product {
   subcategory   Subcategory @relation("SubcategoryToProduct", fields: [subcategoryId], references: [id])
   name        String
   nameTag     String
-  description String
+  description String @db.VarChar(800)
   price       Decimal
   offerPrice  Decimal?
   hasOffer    Boolean   @default(false)
@@ -91,7 +91,7 @@ model Order {
 model OrderItem {
   id         String   @id @default(uuid())
   orderId    String   
-  order      Order    @relation(fields: [orderId], references: [id])
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId  String   
   product    Product  @relation(fields: [productId], references: [id])
   

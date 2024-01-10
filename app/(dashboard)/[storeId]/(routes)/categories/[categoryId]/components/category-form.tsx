@@ -41,10 +41,14 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit category" : "Create category";
-  const description = initialData ? "Edit a category." : "Add a new category";
-  const toastMessage = initialData ? "Category updated." : "Category created.";
-  const action = initialData ? "Save changes" : "Create";
+  const title = initialData ? "Editar categoría" : "Crear categoría";
+  const description = initialData
+    ? "Editar la categoría."
+    : "Añadir una nueva categoría.";
+  const toastMessage = initialData
+    ? "Categoría actualizada."
+    : "Categoría creada.";
+  const action = initialData ? "Guardar cambios" : "Crear";
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(formSchema),
@@ -68,7 +72,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       router.push(`/${params.storeId}/categories`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Algo salió mal.");
     } finally {
       setLoading(false);
     }
@@ -82,10 +86,10 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       );
       router.refresh();
       router.push(`/${params.storeId}/categories`);
-      toast.success("Category deleted.");
+      toast.success("Categoría eliminada.");
     } catch (error: any) {
       toast.error(
-        "Make sure you removed all products using this category first."
+        "Asegúrese de eliminar primero todos los productos que utilizan esta categoría."
       );
     } finally {
       setLoading(false);
@@ -126,11 +130,11 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Category name"
+                      placeholder="Nombre de la categoría"
                       {...field}
                     />
                   </FormControl>

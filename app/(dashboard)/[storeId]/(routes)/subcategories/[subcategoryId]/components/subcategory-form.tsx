@@ -53,14 +53,14 @@ export const SubcategoryForm: React.FC<SubcategoryFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit subcategory" : "Create subcategory";
+  const title = initialData ? "Editar subcategoría" : "Crear subcategoría";
   const description = initialData
-    ? "Edit a subcategory."
-    : "Add a new subcategory";
+    ? "Editar la subcategoría."
+    : "Añadir nueva subcategoría.";
   const toastMessage = initialData
-    ? "Subcategory updated."
-    : "Subcategory created.";
-  const action = initialData ? "Save changes" : "Create";
+    ? "Subcategoría actualizada."
+    : "Subcategoría creada";
+  const action = initialData ? "Guardar cambios" : "Crear";
 
   const defaultValues = initialData
     ? {
@@ -91,7 +91,7 @@ export const SubcategoryForm: React.FC<SubcategoryFormProps> = ({
       router.push(`/${params.storeId}/subcategories`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast.error("Algo salió mal.");
     } finally {
       setLoading(false);
     }
@@ -105,10 +105,10 @@ export const SubcategoryForm: React.FC<SubcategoryFormProps> = ({
       );
       router.refresh();
       router.push(`/${params.storeId}/subcategories`);
-      toast.success("Subcategory deleted.");
+      toast.success("Subcategoría eliminada.");
     } catch (error: any) {
       toast.error(
-        "Make sure you removed all products using this subcategory first."
+        "Primero asegúrese de eliminar todos los productos que utilizan esta subcategoría."
       );
     } finally {
       setLoading(false);
@@ -181,11 +181,11 @@ export const SubcategoryForm: React.FC<SubcategoryFormProps> = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Subcategory name"
+                      placeholder="Nombre de la subcategoría"
                       {...field}
                     />
                   </FormControl>
