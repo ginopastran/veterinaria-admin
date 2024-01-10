@@ -69,7 +69,7 @@ export async function POST(
       success: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
       failure: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
     },
-    notification_url: 'https://ecommerce-admin-ginopastran.vercel.app/api/bc381951-9fce-4f31-b7d3-fadfca3e2f16/notify',
+    notification_url: 'https://ecommerce-admin-ginopastran.vercel.app/api/bc381951-9fce-4f31-b7d3-fadfca3e2f16/mercadopago/webhook',
   };
 
   const response = await mercadopago.preferences.create(preference);
