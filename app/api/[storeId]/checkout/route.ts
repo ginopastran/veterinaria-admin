@@ -72,7 +72,6 @@ export async function POST(
     notification_url: 'https://ecommerce-admin-ginopastran.vercel.app/api/bc381951-9fce-4f31-b7d3-fadfca3e2f16/notify',
   };
 
-
   const response = await mercadopago.preferences.create(preference);
 
   return NextResponse.json({ url: response.body.init_point }, {

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import mercadopago from "mercadopago";
+import prismadb from "@/lib/prismadb";
 
 mercadopago.configure({
     access_token: process.env.NEXT_ACCESS_TOKEN!,
@@ -21,8 +22,24 @@ export default async function handler(
             let paymentStatus = payment.body.status;
 
             console.log([payment, paymentStatus]);
+
+            if (paymentStatus === 'approved') {
+                const orderId = payment.body.order.id; // 
+                await prismadb.order.update({
+                    where: {
+                        id: orderId
+                    },
+                    data: {
+                        isPaid: true
+                    }
+                });
+
+                console.log(`Order with id ${orderId} has been marked as paid.`);
+            }
         }
+        res.status(200).end();
     } catch (error) {
-        res.send(error);
+        console.error(error);
+        res.status(500).send("Internal Server Error");
     }
 };
