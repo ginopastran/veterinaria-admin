@@ -6,7 +6,7 @@ mercadopago.configure({
     access_token: process.env.NEXT_ACCESS_TOKEN!,
 });
 
-export default async function handler(
+export async function POST(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
