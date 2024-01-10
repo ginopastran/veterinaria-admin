@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import mercadopago from "mercadopago";
 import prismadb from "@/lib/prismadb";
 
@@ -6,15 +5,16 @@ mercadopago.configure({
     access_token: process.env.NEXT_ACCESS_TOKEN!,
 });
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { query } = req;
-
-    const topic = query.topic || query.type;
-
-    console.log({ query, topic });
+export async function POST(request: Request) {
     try {
-        if (topic === "payment") {
-            const paymentId = query.id || query["data.id"];
+        const url = new URL(request.url);
+        const searchParams = new URLSearchParams(url.search);
+
+        const type = searchParams.get('type');
+        const data = searchParams.get('data.id');
+
+        if (type === 'payment' && data) {
+            const paymentId = data;
             let payment = await mercadopago.payment.findById(Number(paymentId));
             let paymentStatus = payment.body.status;
 
@@ -29,13 +29,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         isPaid: true
                     }
                 });
-
-                console.log(`Order with id ${orderId} has been marked as paid.`);
             }
         }
     } catch (error) {
-        res.send(error);
+        console.error(error);
     }
-};
-
-export default handler;
+}
