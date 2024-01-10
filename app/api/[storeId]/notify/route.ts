@@ -5,7 +5,10 @@ mercadopago.configure({
     access_token: process.env.NEXT_ACCESS_TOKEN!,
 });
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+export async function POST(
+    req: NextApiRequest,
+    res: NextApiResponse
+) {
     const { query } = req;
 
     const topic = query.topic || query.type;
@@ -24,12 +27,3 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 };
 
-export const route = {
-    api: {
-        bodyParser: false,
-    },
-};
-
-export default {
-    post: handler,
-};
