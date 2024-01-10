@@ -62,9 +62,6 @@ export async function POST(
     }
   });
 
-
-
-
   const preference: CreatePreferencePayload = {
     items,
     auto_return: "approved",

@@ -5,7 +5,7 @@ mercadopago.configure({
     access_token: process.env.NEXT_ACCESS_TOKEN!,
 });
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { query } = req;
 
     const topic = query.topic || query.type;
@@ -22,4 +22,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     } catch (error) {
         res.send(error);
     }
+};
+
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
+
+export default {
+    post: handler,
 };
