@@ -1,30 +1,30 @@
-import { NextApiRequest, NextApiResponse } from "next";
+// Import necessary modules
+
 import mercadopago from "mercadopago";
 import prismadb from "@/lib/prismadb";
+import { NextRequest, NextResponse } from "next/server";
 
 mercadopago.configure({
     access_token: process.env.NEXT_ACCESS_TOKEN!,
 });
 
-export async function POST(
-    req: NextApiRequest,
-    res: NextApiResponse
-) {
-    const { query } = req;
+// Define the route function
+export async function POST(req: NextRequest, res: NextResponse) {
+    const query = req.nextUrl.searchParams;
 
-    const topic = query.topic || query.type;
+    const topic = query.get('topic') || query.get('type');
 
     console.log({ query, topic });
     try {
         if (topic === "payment") {
-            const paymentId = query.id || query["data.id"];
+            const paymentId = query.get('id') || query.get("data.id");
             let payment = await mercadopago.payment.findById(Number(paymentId));
             let paymentStatus = payment.body.status;
 
             console.log([payment, paymentStatus]);
 
             if (paymentStatus === 'approved') {
-                const orderId = payment.body.order.id; // 
+                const orderId = payment.body.order.id;
                 await prismadb.order.update({
                     where: {
                         id: orderId
@@ -33,13 +33,10 @@ export async function POST(
                         isPaid: true
                     }
                 });
-
-                console.log(`Order with id ${orderId} has been marked as paid.`);
             }
         }
-        res.status(200).end();
     } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");
+        return NextResponse.error();
     }
-};
+}
