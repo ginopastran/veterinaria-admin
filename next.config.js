@@ -9,8 +9,8 @@ const nextConfig = {
           { key: "Access-Control-Allow-Credentials", value: "true" },
           {
             key: "Access-Control-Allow-Origin",
-            value:
-              "https://veterinaria-luffi.vercel.app" & "http://localhost:3000",
+            value: "https://veterinaria-luffi.vercel.app",
+            value: "http://localhost:3000",
           }, // replace this your actual origin
           {
             key: "Access-Control-Allow-Methods",
