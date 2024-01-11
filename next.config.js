@@ -10,7 +10,8 @@ const nextConfig = {
           {
             key: "Access-Control-Allow-Origin",
             // value: "https://veterinaria-luffi.vercel.app",
-            value: "http://localhost:3000",
+            value:
+              "http://localhost:3000" && "https://veterinaria-luffi.vercel.app",
           }, // replace this your actual origin
           {
             key: "Access-Control-Allow-Methods",
