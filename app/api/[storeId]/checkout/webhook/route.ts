@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
 
         console.log(type, id);
 
-
         if (type == "payment") {
             const payment = await mercadopago.payment.findById(Number(id));
             if (payment.body.status == "approved") {
